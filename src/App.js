@@ -5,6 +5,7 @@ import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenS
 
 import DataForm from './panels/DataForm';
 import PhotoUpload from './panels/PhotoUpload';
+import {suggestPost} from './api/index';
 
 import '@vkontakte/vkui/dist/vkui.css';
 
@@ -19,19 +20,29 @@ const App = () => {
         post: null,
     });
     const [user, setUser] = useState(null);
-    const [popout, setPopout] = useState(/*<ScreenSpinner size='large' />*/);
+    const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
 
     useEffect(() => {
+        suggestPost();
         bridge.subscribe(({ detail: { type, data } }) => {
             if (type === 'VKWebAppUpdateConfig') {
                 const schemeAttribute = document.createAttribute('scheme');
-                schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+                schemeAttribute.value = data.scheme 
+                    ? data.scheme 
+                    : 'client_light';
                 document.body.attributes.setNamedItem(schemeAttribute);
             }
         });
         async function fetchData() {
             const user = await bridge.send('VKWebAppGetUserInfo');
-            setUser(user);
+            setUser(user /*{
+                photo_200: "https://sun9-56.userapi.com/c622617/v622617027/44dc3/8FG7KF1GDeg.jpg?ava=1",
+                first_name: "Max",
+                last_name: "Qwe",
+                city: {
+                    title: "Tomsk"
+                }
+            }*/);
             setPopout(null);
         }
         fetchData();
@@ -41,7 +52,7 @@ const App = () => {
         if (user == null) {
             return;
         }
-        setAdData({ place: user.city.title });
+        setAdData({ ...adData, place: user.city.title });
     }, [user]);
 
     const go = (to, data) => {
@@ -56,7 +67,7 @@ const App = () => {
         >
             <DataForm
                 id="dataForm"
-                fetchedUser={user}
+                user={user}
                 data={adData}
                 go={(data) => go("photoUpload", data)}
             />

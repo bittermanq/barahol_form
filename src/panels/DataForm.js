@@ -16,7 +16,7 @@ import {
     Avatar
 } from '@vkontakte/vkui';
 
-const DataForm = ({ id, go, fetchedUser, data }) => {
+const DataForm = ({ id, go, user, data }) => {
 
     const ValidResult = "valid";
     const ErrorResult = "error"
@@ -32,7 +32,7 @@ const DataForm = ({ id, go, fetchedUser, data }) => {
     const [isErrorInForm, setIsErrorInForm] = useState(false);
 
     useEffect(() => {
-        document.forms[FormName]["price"].addEventListener("keypress", function (evt) {
+        document.forms[FormName].price.addEventListener("keypress", function (evt) {
             if (evt.which < 48 || evt.which > 57) {
                 evt.preventDefault();
             }
@@ -47,7 +47,7 @@ const DataForm = ({ id, go, fetchedUser, data }) => {
         form.description.value = data.description;
         form.type.value = data.type;
         form.post.value = data.post;
-    }, []);
+    }, [data]);
 
     const validateAndProceed = () => {
         const form = document.forms[FormName];
@@ -87,24 +87,17 @@ const DataForm = ({ id, go, fetchedUser, data }) => {
 
     return (
         <Panel id={id}>
-            <PanelHeader>Подать объявление</PanelHeader>
-
             {
-                fetchedUser &&
+                user &&
                 <Group title="User Data">
                     <Cell
                         before={
-                            fetchedUser.photo_200
-                                ? <Avatar src={fetchedUser.photo_200} />
+                            user.photo_200
+                                ? <Avatar src={user.photo_200} />
                                 : null
                         }
-                        description={
-                            fetchedUser.city && fetchedUser.city.title
-                                ? fetchedUser.city.title
-                                : ''
-                        }
                     >
-                        {`${fetchedUser.first_name} ${fetchedUser.last_name}`}
+                        {`${user.first_name} ${user.last_name}`}
                     </Cell>
                 </Group>
             }
@@ -170,7 +163,7 @@ const DataForm = ({ id, go, fetchedUser, data }) => {
 DataForm.propTypes = {
     id: PropTypes.string.isRequired,
     go: PropTypes.func.isRequired,
-    fetchedUser: PropTypes.shape({
+    user: PropTypes.shape({
         photo_200: PropTypes.string,
         first_name: PropTypes.string,
         last_name: PropTypes.string,
