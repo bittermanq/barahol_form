@@ -10,10 +10,10 @@ import Persik from './panels/Persik';
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState(null);
-	const [popout, setPopout] = useState(/*<ScreenSpinner size='large' />*/null);
+	const [popout, setPopout] = useState(<ScreenSpinner size='large' />null);
 
 	useEffect(() => {
-		/*bridge.subscribe(({ detail: { type, data }}) => {
+		bridge.subscribe(({ detail: { type, data }}) => {
 			if (type === 'VKWebAppUpdateConfig') {
 				const schemeAttribute = document.createAttribute('scheme');
 				schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
@@ -25,7 +25,7 @@ const App = () => {
 			setUser(user);
 			setPopout(null);
 		}
-		fetchData();*/
+		fetchData();
 	}, []);
 
 	const go = e => {
