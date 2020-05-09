@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import View from '@vkontakte/vkui/dist/components/View/View';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
-import '@vkontakte/vkui/dist/vkui.css';
 
-import Home from './panels/Home';
+import DataForm from './panels/DataForm';
 import Persik from './panels/Persik';
+
+import '@vkontakte/vkui/dist/vkui.css';
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState(null);
-	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
+	const [popout, setPopout] = useState(/*<ScreenSpinner size='large' />*/);
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -34,8 +35,8 @@ const App = () => {
 
 	return (
 		<View activePanel={activePanel} popout={popout}>
-			<Home id='home' fetchedUser={fetchedUser} go={go} />
-			<Persik id='persik' go={go} />
+			<DataForm id='home' fetchedUser={fetchedUser} />
+			{/*<Persik id='persik' go={go} />*/}
 		</View>
 	);
 }
