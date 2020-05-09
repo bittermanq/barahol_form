@@ -13,6 +13,7 @@ import {
     InfoRow,
     FormStatus,
     Group,
+    Avatar
 } from '@vkontakte/vkui';
 
 const DataForm = ({ id, go, fetchedUser, data }) => {
