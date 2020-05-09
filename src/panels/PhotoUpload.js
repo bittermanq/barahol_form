@@ -12,10 +12,10 @@ import './Persik.css';
 
 const osName = platform();
 
-const Persik = props => (
+const PhotoUpload = props => (
 	<Panel id={props.id}>
 		<PanelHeader
-			left={<PanelHeaderButton onClick={props.go} data-to="home">
+			left={<PanelHeaderButton onClick={() => props.go(props.data)} data-to="home">
 				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
 			</PanelHeaderButton>}
 		>
@@ -25,9 +25,9 @@ const Persik = props => (
 	</Panel>
 );
 
-Persik.propTypes = {
+PhotoUpload.propTypes = {
 	id: PropTypes.string.isRequired,
 	go: PropTypes.func.isRequired,
 };
 
-export default Persik;
+export default PhotoUpload;

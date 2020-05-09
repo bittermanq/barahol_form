@@ -14,29 +14,41 @@ import {
     FormStatus,
 } from '@vkontakte/vkui';
 
-const DataForm = ({ id, go, fetchedUser }) => {
+const DataForm = ({ id, go, fetchedUser, data }) => {
 
-    const valid = "valid";
-    const error = "error"
-    const deft = "default";
+    const ValidResult = "valid";
+    const ErrorResult = "error"
+    const DefaultResult = "default";
+    const FormName = "form";
 
     const [status, setStatus] = useState({
-        name: deft,
-        price: deft,
-        place: deft,
-        description: deft,
+        name: DefaultResult,
+        price: DefaultResult,
+        place: DefaultResult,
+        description: DefaultResult,
     });
+    const [isErrorInForm, setIsErrorInForm] = useState(false);
 
-    useEffect(() => {    
-        document.forms["form"]["price"].addEventListener("keypress", function (evt) {
+    useEffect(() => {
+        document.forms[FormName]["price"].addEventListener("keypress", function (evt) {
             if (evt.which < 48 || evt.which > 57) {
                 evt.preventDefault();
             }
         });
     }, []);
 
-    const validate = () => {
-        const form = document.forms["form"];
+    useEffect(() => {
+        const form = document.forms[FormName];
+        form.name.value = data.name;
+        form.price.value = data.price;
+        form.place.value = data.place;
+        form.description.value = data.description;
+        form.type.value = data.type;
+        form.post.value = data.post;
+    }, []);
+
+    const validateAndProceed = () => {
+        const form = document.forms[FormName];
         const name = form.name;
         const price = form.price;
         const place = form.place;
@@ -44,18 +56,32 @@ const DataForm = ({ id, go, fetchedUser }) => {
 
         const newStatus = { ...status };
 
-        name.value == "" ? newStatus.name = error : newStatus.name = valid;
-        place.value == "" ? newStatus.place = error : newStatus.place = valid;
-        description.value == "" ? newStatus.description = deft : newStatus.description = valid;
+        name.value == "" ? newStatus.name = ErrorResult : newStatus.name = ValidResult;
+        place.value == "" ? newStatus.place = ErrorResult : newStatus.place = ValidResult;
+        description.value == "" ? newStatus.description = DefaultResult : newStatus.description = ValidResult;
 
-        isNaN(price.value) ? newStatus.price = error : newStatus.price = valid;
+        price.value == "" || isNaN(price.value) ? newStatus.price = ErrorResult : newStatus.price = ValidResult;
 
+        const isErrorInForm = newStatus.name == ErrorResult
+            || newStatus.price == ErrorResult
+            || newStatus.place == ErrorResult;
+
+        setIsErrorInForm(isErrorInForm);
         setStatus(newStatus);
-    }
 
-    const isErrorInForm = status.name == error
-        || status.price == error
-        || status.place == error;
+        if (isErrorInForm) {
+            return;
+        }
+
+        go({
+            name: name.value,
+            price: price.value,
+            place: place.value,
+            description: description.value,
+            type: form.type.value,
+            post: form.post.value,
+        });
+    }
 
     return (
         <Panel id={id}>
@@ -81,7 +107,7 @@ const DataForm = ({ id, go, fetchedUser }) => {
                 </Group>
             }
 
-            <FormLayout name="form">
+            <FormLayout name={FormName}>
                 {
                     isErrorInForm &&
                     <FormStatus mode={"error"}>
@@ -129,12 +155,12 @@ const DataForm = ({ id, go, fetchedUser }) => {
                     status={status.post}
                     id="post"
                 >
-                    <option value="yes">Отправка возможна</option>
-                    <option value="no">Без отправки</option>
+                    <option value={true}>Отправка возможна</option>
+                    <option value={false}>Без отправки</option>
                 </Select>
             </FormLayout>
 
-            <Button onClick={validate}>Принять и загрузить фото ></Button>
+            <Button onClick={validateAndProceed}>Принять и загрузить фото...</Button>
         </Panel>
     )
 };
