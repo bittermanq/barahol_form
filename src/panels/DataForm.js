@@ -12,6 +12,7 @@ import {
     Div,
     InfoRow,
     FormStatus,
+    Group,
 } from '@vkontakte/vkui';
 
 const DataForm = ({ id, go, fetchedUser, data }) => {
