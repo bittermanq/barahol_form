@@ -1,11 +1,6 @@
-var express = require('express');
-var cors = require('cors');
+import axios from 'axios';
 
-var app = express();
-app.use(cors())
-
-// &access_token={2}
-const requestUrl = "https://api.vk.com/method/{0}?{1}&v=5.103";
+// &access_token={}
 const ownerId = "-184189403";
 
 export const suggestPost = () => {
@@ -13,7 +8,22 @@ export const suggestPost = () => {
 
     const url = `https://api.vk.com/method/wall.post?${ownerId}&${message}&v=5.103`;
 
-    app.get(url, function (req, res, next) {
-        console.log(res);
-      })
+    axios.get(url, {
+	headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},
+	}).then(function (response) {
+		console.log('response is : ' + response.data);
+	}).catch(function (error) {
+		if (error.response) {
+		  console.log("1", error.response.headers);
+		} 
+		else if (error.request) {
+	      console.log("2", error.request);
+		} 
+		else {
+		  console.log("3", error.message);
+		}
+	console.log("error is", error.config);
+});
 }
